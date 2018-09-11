@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k)	for(int i=j;i<=k;++i)
+#define D(i,j,k) 	for(int i=j;i>=k;--i)
+const int N=50005,BLOCK=223;
+int n;
+long long tag[505],sum[505],a[N];
+int BLOCK_BEGIN(int x)
+{
+	return x*BLCOK+1;
+}
+
+int main()
+{
+	scanf("%d",&n);
+	U(i,1,n)	
+	{
+		scanf("%lld",&a[i]);
+		block[i]=(i-1)/BLOCK;
+		sum[block[i]]+=a[i];
+	}
+	int opt;
+	long long l,r,c;
+	U(i,1,n)
+	{
+		scanf("%d%lld%lld%lld",&opt,&l,&r,&c);
+		if(!opt)	Ask1(l,r,c);
+		else		Ask2(l,r,c);
+	}
+	return 0;
+}
