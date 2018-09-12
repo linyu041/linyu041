@@ -2,14 +2,44 @@
 using namespace std;
 #define U(i,j,k)	for(int i=j;i<=k;++i)
 #define D(i,j,k) 	for(int i=j;i>=k;--i)
-const int N=50005,BLOCK=223;
-int n;
-long long tag[505],sum[505],a[N];
+const int N=50005,BLOCK=225;
+int n,block[N];
+long long add[555],sum[555],a[N];
 int BLOCK_BEGIN(int x)
 {
-	return x*BLCOK+1;
+	return x*BLOCK+1;
 }
-
+int BLOCK_END(int x)
+{
+	return x!=block[n]?(x+1)*BLOCK:n;
+}
+void Ask1(int L,int R,long long c)
+{
+	if(block[L]==block[R])
+	{
+		sum[block[L]]+=c*(R-L+1);
+		U(i,L,R)	a[i]+=c;
+		return;
+	}
+	U(i,block[L]+1,block[R]-1)	add[i]+=c,sum[i]+=c*(BLOCK_END(i)-BLOCK_BEGIN(i)+1);
+	sum[block[L]]+=c*(BLOCK_END(block[L])-L+1);
+	sum[block[R]]+=c*(R-BLOCK_BEGIN(block[R])+1);
+	U(i,L,BLOCK_END(block[L]))	a[i]+=c;
+	U(i,BLOCK_BEGIN(block[R]),R)	a[i]+=c;
+}
+long long Ask2(int L,int R,long long c)
+{
+	long long suum=0;
+	if(block[L]==block[R])
+	{
+		U(i,L,R)	suum=(a[i]+suum+add[block[i]])%(c+1);
+		return suum;
+	}
+	U(i,block[L]+1,block[R]-1)	suum=(suum+sum[i])%(c+1);
+	U(i,L,BLOCK_END(block[L]))	suum=(suum+a[i]+add[block[i]])%(c+1);
+	U(i,BLOCK_BEGIN(block[R]),R)	suum=(suum+a[i]+add[block[i]])%(c+1);
+	return suum;
+}
 int main()
 {
 	scanf("%d",&n);
@@ -19,13 +49,18 @@ int main()
 		block[i]=(i-1)/BLOCK;
 		sum[block[i]]+=a[i];
 	}
-	int opt;
-	long long l,r,c;
+	int opt,l,r;
+	long long c;
 	U(i,1,n)
 	{
-		scanf("%d%lld%lld%lld",&opt,&l,&r,&c);
+		scanf("%d%d%d%lld",&opt,&l,&r,&c);
 		if(!opt)	Ask1(l,r,c);
-		else		Ask2(l,r,c);
+		else		
+		{
+			printf("%lld\n",Ask2(l,r,c));
+		}
+		/*U(j,1,n)	cout<<sum[block[j]]<<" ";
+		cout<<"A\n";//*/
 	}
 	return 0;
 }
