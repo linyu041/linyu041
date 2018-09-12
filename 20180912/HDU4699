@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=1000005;
+int n,maxx[N],bef[N],bac[N],nowa,nowb,sum[N];
+void Insert()
+{
+	int x;
+	scanf("%d",&x);
+	++nowa;
+	bef[nowa]=x;
+	sum[nowa]=x+sum[nowa-1];
+	maxx[nowa]=max(maxx[nowa-1],sum[nowa]);
+}
+void Del()
+{
+	if(nowa==0)	return;
+	--nowa;
+}
+void Left()
+{
+	if(nowa==0)	return;
+	++nowb;
+	bac[nowb]=bef[nowa];
+	--nowa;
+	nowa=nowa<0?++nowa:nowa;
+}
+void Right()
+{
+	if(nowb==0)	return ;
+	++nowa;
+	bef[nowa]=bac[nowb];
+	sum[nowa]=sum[nowa-1]+bef[nowa];
+	maxx[nowa]=max(maxx[nowa-1],sum[nowa]);
+	--nowb;
+	nowb=nowb<0?++nowb:nowb;
+}
+void Query()
+{
+	int x;
+	scanf("%d",&x);
+	printf("%d\n",maxx[x]);
+}
+int main()
+{
+	while(scanf("%d",&n)!=EOF)
+	{
+		char c;
+		sum[0]=nowa=nowb=0;
+		maxx[0]=-INT_MAX;
+		while(n--)
+		{
+			while(!isalpha(c))	c=getchar();
+			switch(c)
+			{
+				case 'I':Insert();break;
+				case 'D':Del();break;
+				case 'L':Left();break;
+				case 'R':Right();break;
+				case 'Q':Query();break;
+			}
+			c=getchar();
+		/*U(i,1,nowa)	cout<<bef[i]<<" ";
+		cout<<"|";
+		U(i,1,nowb)	cout<<bac[i]<<" ";
+		cout<<endl;//*/
+		}
+	}
+
+	return 0;
+}
