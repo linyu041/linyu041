@@ -1,0 +1,43 @@
+#include<iostream>
+#include<cstdio>
+#include<vector>
+#include<climits>
+#include<algorithm>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=100505;
+int n,head;
+struct Data
+{
+	long long w,h;
+}a[N];
+int main()
+{
+	while(scanf("%d",&n)!=EOF)
+	{
+		if(!n)	break;
+		long long x;
+		head=0;
+		long long ans=-INT_MAX;
+		U(i,1,n+1)
+		{
+			if(i!=n+1)	scanf("%lld",&x);
+			else	x=-1;
+			if(x>=a[head].h||!head)	a[++head].h=x,a[head].w=1;
+			else
+			{
+				long long w=0;
+				while(x<a[head].h&&head!=0)
+				{
+					w+=a[head].w;
+					ans=max(ans,(long long)w*a[head].h);
+					--head;
+				}
+				if(x!=-1)	a[++head].h=x;a[head].w=w+1;
+			}
+		}
+		printf("%lld\n",ans);	
+	}
+	return 0;
+}
