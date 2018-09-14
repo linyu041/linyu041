@@ -1,0 +1,26 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=300005;
+long long a[N],ans=-INT_MAX,sum[N];
+int n,m,q[N],l,r;
+int	main()
+{
+	scanf("%d%d",&n,&m);
+	U(i,1,n)
+	{
+		scanf("%lld",&a[i]);
+		sum[i]=a[i]+sum[i-1];
+	}
+	q[0]=0;
+	U(i,1,n)
+	{
+		while(l<=r&&i-q[l]>m)	++l;
+		ans=max(ans,sum[i]-sum[q[l]]);
+		while(l<=r&&sum[i]<=sum[q[r]])	--r;
+		q[++r]=i;
+	}
+	printf("%lld\n",max(ans,(long long)0));
+	return 0;
+}
