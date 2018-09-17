@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=100005;
+int a[N],st[23][N],n,m,bin[23],lo[N];
+
+namespace PreSolve
+{
+	void A()
+	{
+		bin[0]=1;
+		U(i,1,21)	bin[i]=bin[i-1]<<1;
+		lo[1]=1;
+		U(i,2,n)	lo[i]=lo[i>>1]+1;
+		for(int i=1;bin[i]<=n;++i)
+		{
+			for(int j=1;j+bin[i]-1<=n;++j)
+			{
+				st[i][j]=min(st[i-1][j],st[i-1][j+bin[i-1]]);
+			}
+		}
+	}
+}
+
+int GetMin(int L,int R)
+{
+	int t=lo[R-L+1];
+	return min(st[t-1][L],st[t-1][R-bin[t-1]+1]);
+}
+
+int GetNxt(int x,int L,int R)
+{
+	int l=L,r=R,mid;
+	while(l<r)
+	{
+		mid=(l+r)>>1;
+		if(GetMin(l,mid)<=x)	r=mid;
+		else					l=mid+1;
+	}
+	return l;
+}
+
+int Query(int x,int L,int R)
+{
+	while(L<=R)
+	{
+		if(GetMin(L,R)>x)	
+		{
+			break;
+		}
+		int nxt=GetNxt(x,L,R);
+		x%=a[nxt];
+		L=nxt+1;
+	}
+	return x;
+}
+
+int main()
+{
+	freopen("mod.in","r",stdin);
+	freopen("mod.out","w",stdout);
+	
+	scanf("%d%d",&n,&m);
+	U(i,1,n)
+	{
+		scanf("%d",&a[i]);
+		st[0][i]=a[i];
+	}
+	PreSolve::A();
+	int x,l,r;
+	U(i,1,m)
+	{
+		scanf("%d%d%d",&x,&l,&r);
+		printf("%d\n",Query(x,l,r));
+	}
+	return 0;
+}
