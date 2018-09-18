@@ -1,0 +1,101 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=100005;
+long long f[N+N],pos[N+N];
+struct Data
+{
+	long long v,x;
+}h[N+N];
+int n,m,pre[N+N],nxt[N+N],sz;
+void Push(long long v,int x);
+void Init()
+{
+	scanf("%d%d",&n,&m);
+	U(i,1,n)	scanf("%lld",f+i);
+	U(i,2,n)
+	{
+		Push(f[i]-f[i-1],i);
+		pre[i]=i-1;nxt[i]=i+1;
+	}
+	pre[2]=-1;nxt[n]=-1;
+}
+const long long Inf=INT_MAX;
+long long ans=0;
+void Pushup(int x)
+{
+	while(h[x].v<h[x>>1].v)
+	{
+		pos[h[x>>1].x]=x;
+		swap(h[x>>1],h[x]);
+		x>>=1;
+	}
+	pos[h[x].x]=x;
+}
+void Push(long long v,int x)
+{
+	++sz;h[sz].x=x;h[sz].v=v;
+	pos[x]=sz;
+	Pushup(sz);
+}
+void Pushdown(int x)
+{
+	int to;
+	while((x<<1)<=sz)
+	{
+		to=(x<<1);
+		if(to<sz&&h[to+1].v<h[to].v)	++to;
+		if(h[x].v>h[to].v)
+		{
+			pos[h[to].x]=x;
+			swap(h[x],h[to]);
+			x=to;
+		}
+		else	break;
+	}
+	pos[h[x].x]=x;
+}
+void Del(int x)
+{
+	h[x].v=Inf;
+	Pushdown(x);
+}
+void Solve()
+{
+	int a,b;
+	Data k;
+	U(i,1,m)
+	{
+		k=h[1];
+		if(pre[k.x]==-1)
+		{
+			ans+=k.v;
+			Del(1);Del(pos[nxt[k.x]]);
+			pre[nxt[nxt[k.x]]]=-1;
+		}
+		else	if(nxt[k.x]==-1)
+		{
+			ans+=k.v;
+			Del(1);Del(pos[pre[k.x]]);
+			nxt[pre[pre[k.x]]]=-1;
+		}
+		else
+		{
+			ans+=k.v;
+			a=pre[k.x];b=nxt[k.x];
+			pre[k.x]=pre[a];nxt[pre[a]]=k.x;
+			nxt[k.x]=nxt[b];pre[nxt[b]]=k.x;
+			h[1].v=h[pos[b]].v+h[pos[a]].v-k.v;
+			Pushdown(1);
+			Del(pos[a]);Del(pos[b]);
+		}
+	}	
+	printf("%lld\n",ans);
+}
+int main()
+{
+	Init();
+	Solve();
+	return 0;
+}
