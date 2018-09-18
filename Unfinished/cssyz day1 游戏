@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N=10000005;
+const long long Mod=1000000007;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+int n,m,tagx[N],tagy[N],k;
+int main()
+{
+	freopen("game.in","r",stdin);
+	freopen("game.out","w",stdout);
+	scanf("%d%d%d",&n,&m,&k);
+	memset(tagx,-1,sizeof(tagx));
+	memset(tagy,-1,sizeof(tagy));
+	int x,y;
+	char c=getchar();
+	U(i,1,k)
+	{
+		while(!isalpha(c))	c=getchar();
+		scanf("%d%d",&x,&y);
+		if(c=='R')
+		{
+			tagx[x]=(tagx[x]==-1)?y:(tagx[x]*y)%Mod;
+		}
+		else
+		{
+			tagy[x]=(tagy[x]==-1)?y:(tagy[x]*y)%Mod;
+		}
+		c=getchar();
+	}
+	long long sumy=0,d=0,sum=0;
+	U(i,1,n)	tagx[i]=(tagx[i]==-1)?1:tagx[i],sumy+=(((i-1)*m+1)*tagx[i])%Mod,d+=tagx[i];
+	U(j,1,m)
+	{
+		tagy[j]=(tagy[j]==-1)?1:tagy[j];
+		sum=(sum+(sumy+(j-1)*d)*tagy[j])%Mod;
+	//	cout<<sum<<endl;
+	}
+	printf("%lld\n",sum);
+	return 0;
+}
