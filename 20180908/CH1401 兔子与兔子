@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=1000005,M=131;
+string s;
+unsigned long long hash[N],p[N];
+int n;
+unsigned long long Cal(int L,int R)
+{
+	return hash[R]-hash[L-1]*p[R-L+1];
+}
+int main()
+{
+	getline(cin,s);
+	scanf("%d",&n);
+	int len=s.size();
+	p[0]=1;
+	U(i,1,len)
+	{
+		hash[i]=(hash[i-1]*M+s[i-1]-'a'+1);
+		p[i]=(p[i-1]*M);
+//		cout<<hash[i]<<" ";
+	}
+//	cout<<endl;
+	int l,r,L,R;
+	U(i,1,n)
+	{
+		scanf("%d%d%d%d",&l,&r,&L,&R);
+		if(Cal(l,r)==Cal(L,R))
+		{
+			printf("Yes\n");
+		}
+		else
+		{
+		//	cout<<Cal(l,r)<<" "<<Cal(L,R)<<endl;
+			printf("No\n");
+		}
+	}
+	return 0;
+}
