@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N=10000005;
+const unsigned long long Mod=1000000007;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+int n,m,tagx[N],tagy[N],k;
+unsigned long long MOD(unsigned long long x)
+{
+	return x%Mod;
+}
+int main()
+{
+	freopen("game.in","r",stdin);
+	freopen("game.out","w",stdout);
+	scanf("%d%d%d",&n,&m,&k);
+	memset(tagx,-1,sizeof(tagx));
+	memset(tagy,-1,sizeof(tagy));
+	unsigned long long x,y;
+	char c;
+	U(i,1,k)
+	{
+		cin>>c>>x>>y;
+		y%=Mod;
+		if(c=='R')
+		{
+			tagx[x]=(tagx[x]==-1)?y%Mod:(tagx[x]*y)%Mod;
+		}
+		else
+		{
+			tagy[x]=(tagy[x]==-1)?y%Mod:(tagy[x]*y)%Mod;
+		}
+	}
+	unsigned long long sumy=0,d=0,sum=0,mm=m%Mod;
+	U(i,1,n)	
+	{
+		tagx[i]=(tagx[i]==-1)?1:tagx[i];
+		unsigned long long t=((i-1)*mm+1)%Mod;
+		t=(t*tagx[i])%Mod;
+		sumy=(sumy+t)%Mod;
+		//sumy%=Mod;
+		d+=tagx[i];
+		d%=Mod;
+	}
+	U(j,1,m)
+	{
+		tagy[j]=(tagy[j]==-1)?1:tagy[j]%Mod;
+		unsigned long long t=(j-1)*d%Mod;
+		t+=sumy;
+		t%=Mod;
+		t=t*tagy[j]%Mod;
+		sum=(sum+t)%Mod;
+	}
+	cout<<sum<<endl;
+	return 0;
+}
