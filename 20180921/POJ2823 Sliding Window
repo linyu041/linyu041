@@ -1,0 +1,113 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+using namespace std;
+#define U(i,j,k) for(register int i=j;i<=k;++i)
+const int N=1000005;
+int n,m;
+int ans[2][1000005],a[1000005];
+
+struct Data
+{
+	int fir,sec;
+};
+
+struct Min
+{
+	Data a[N];
+	int l,r;
+	void clear()
+	{
+		l=1;r=0;
+	};
+	void push(int x,int y)
+	{
+		while(l<=r&&a[r].fir>=x)	--r;
+		a[++r].fir=x;a[r].sec=y;
+	};
+	void pop(int x)
+	{
+		while(l<=r&&x-a[l].sec+1>m)	++l;
+	};
+	int min()
+	{
+		return a[l].fir;	
+	};
+}q1;
+
+struct Max
+{
+	Data a[N];
+	int l,r;
+	void clear()
+	{
+		r=0;l=1;
+	};
+	void push(int x,int y)
+	{
+		while(l<=r&&a[r].fir<=x)	--r;
+		a[++r].fir=x;a[r].sec=y;
+	};
+	void pop(int x)
+	{
+		while(l<=r&&x-a[l].sec+1>m)	++l;
+	};
+	int max()
+	{
+		return a[l].fir;
+	};
+}q2;
+
+inline void Read(int &x)
+{
+	x=0;
+	int tag=1;
+	char c=getchar();
+	while(!isdigit(c)&&c!='-')	c=getchar();
+	if(c=='-')
+	{
+		c=getchar();
+		tag=0;
+	}
+	while(isdigit(c))	
+	{
+		x=(x<<3)+(x<<1)+c-'0';
+		c=getchar();
+	}
+	x=!tag?-x:x;
+}
+
+int main()
+{
+	Read(n);Read(m);
+	if(m>n)	m=n;
+	U(i,1,n)
+	{
+		Read(a[i]);
+	}
+	
+	q1.clear();q2.clear();
+	U(i,1,m-1)
+	{
+		q1.push(a[i],i);q2.push(a[i],i);	
+	}
+	U(i,m,n)
+	{
+		q1.pop(i);q2.pop(i);
+		q1.push(a[i],i);q2.push(a[i],i);
+		ans[0][i]=q1.min();ans[1][i]=q2.max();
+	}
+	
+	U(i,m,n-1)
+	{
+		printf("%d ",ans[0][i]);
+	}
+	printf("%d\n",ans[0][n]);
+	U(i,m,n-1)
+	{
+		printf("%d ",ans[1][i]);
+	}
+	printf("%d\n",ans[1][n]);
+	
+	return 0;
+}
