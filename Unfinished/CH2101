@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+const int N=300005;
+struct Edge
+{
+	int tot,la[N],v[N],nxt[N];
+	void clear()
+	{
+		tot=0;memset(la,0,sizeof(la));
+	};
+	void AddE(int x,int y)
+	{
+		++tot;v[tot]=y;nxt[tot]=la[x];la[x]=tot;
+	};
+}e;
+int n,m,g[N],f[N];
+long long ans=0;
+queue<int> q;
+void Topsort()
+{
+	while(!q.empty())
+	{
+		int t=q.front();
+		q.pop();
+		for(int i=la[t];i;i=nxt[i])
+		{
+			--f[e.v[i]];
+			g[e.v[i]]+=g[t];
+			if(f[e.v[i]]==0)
+			{
+				ans+=g[e.v[i]];
+				q.push(e.v[i]);
+			}
+		}
+	}
+	printf("%lld\n",ans);
+}
+int main()
+{
+	scanf("%d%d",&n,&m);
+	int x,y;
+	U(i,1,m)
+	{
+		scanf("%d%d",&x,&y);
+		e.AddE(y,x);
+		++f[x]; 
+	}
+	U(i,1,n)
+	{
+		if(!f[i])
+		{
+			q.push(i);
+		}
+	}
+	Topsort();
+	return 0;
+}
