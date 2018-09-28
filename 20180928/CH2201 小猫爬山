@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+long long c[22],w,sum[22];
+int n,anss=18,b[22];
+int cmp(int x,int y)
+{
+	return x>y;
+}
+int Check()
+{
+	U(i,1,n)	if(!b[i])	return 0;
+	return 1;
+}
+void DDFS(int x,int ans)
+{
+	if(ans>=anss)	return;
+	if(x>n)
+	{
+		anss=min(ans,anss);
+		return;
+	}
+	U(i,1,ans)
+	{
+		if(sum[i]+c[x]<=w)
+		{
+			sum[i]+=c[x];
+			DDFS(x+1,ans);
+			sum[i]-=c[x];
+		}
+	}
+	sum[ans+1]=c[x];
+	DDFS(x+1,ans+1);
+	sum[ans+1]=0;
+
+}
+int main()
+{
+	scanf("%d%lld",&n,&w);
+	U(i,1,n)
+	{
+		scanf("%lld",&c[i]);
+	}
+	sort(c+1,c+1+n,cmp);
+	DDFS(1,0);
+	printf("%d\n",anss);
+	return 0;
+}
