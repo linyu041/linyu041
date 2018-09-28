@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=50;
+map<long long,long long> m,m2;
+int a[N],n,kk;
+long long sum=0;
+void DDFS1(int x)
+{
+	if(x>n/2)
+	{
+		++m[sum];
+		return;
+	}
+	sum+=a[x];
+	DDFS1(x+1);
+	sum-=a[x];
+	DDFS1(x+1);
+}
+void DDFS2(int x)
+{
+	if(x>n)	
+	{
+		++m2[sum];
+		return;
+	}
+	sum+=a[x];
+	DDFS2(x+1);
+	sum-=a[x];
+	DDFS2(x+1);
+}
+int main()
+{
+	scanf("%d%d",&n,&kk);
+	U(i,1,n)	scanf("%d",&a[i]);
+	m2.clear();m.clear();
+	sum=0;
+	DDFS1(1);
+	sum=0;
+	DDFS2(n/2+1);
+	long long ans=0;
+	for(map<long long,long long>::iterator i=m.begin();i!=m.end();++i)
+	{
+		long long t=i->first;
+		if(m2.count(kk-t))	ans+=(i->second)*m2[kk-t];
+	}
+	printf("%lld\n",ans);
+	return 0;
+}
