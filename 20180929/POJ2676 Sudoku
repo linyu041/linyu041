@@ -1,0 +1,96 @@
+#include<iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int n=9;
+int T,b[11],hang[11],lie[11],block[11][11],tims[11],a[11][11];
+int sqr[11],lo[1024],tag,nxt[11];
+void Print()
+{
+//	cout<<"A\n";
+	tag=1;
+	U(i,1,n)
+	{
+		U(j,1,n)
+		{
+			printf("%d",a[i][j]);
+		}
+		printf("\n");
+	}
+}
+void DDFS(int x,int y,int tot_empty)
+{
+	if(tag)	return;
+	if(x>10||!tot_empty)
+	{
+		Print();
+		return;
+	}
+	if(a[x][y])	
+	{
+		if(y<=8)	DDFS(x,y+1,tot_empty);
+		else		DDFS(nxt[x],1,tot_empty);
+		return;
+	}
+	int t=(hang[x]&lie[y])&sqr[block[x][y]],k;
+	while(t!=0)
+	{
+		k=t&(-t);
+		a[x][y]=lo[k];
+		hang[x]^=k;
+		lie[y]^=k;
+		sqr[block[x][y]]^=k;
+		if(y<=8)	DDFS(x,y+1,tot_empty-1);
+		else		DDFS(nxt[x],1,tot_empty-1);
+		a[x][y]=0;
+		hang[x]^=k;
+		lie[y]^=k;
+		sqr[block[x][y]]^=k;
+		t-=k;
+	}
+}
+int cmp(int x,int y)
+{
+	return tims[x]<tims[y];
+}
+int main()
+{
+	scanf("%d\n",&T);
+	char c;
+	int tst=0;
+	U(i,1,n)	tst+=(1<<i),lo[(1<<i)]=i;
+	U(i,1,n)	U(j,1,n)	block[i][j]=((i-1)/3)*3+((j-1)/3)+1;
+	while(T--)
+	{
+		U(i,1,n)	hang[i]=lie[i]=sqr[i]=tst;
+		tag=0;
+		int tot_empty=0;
+		U(i,1,n)
+		{
+			tims[i]=0;
+			b[i]=i;
+			U(j,1,n)
+			{
+				c=getchar();	
+				a[i][j]=c-'0';
+				if(!a[i][j])	++tims[i],++tot_empty;
+				else
+				{
+					hang[i]^=(1<<a[i][j]);
+					lie[j]^=(1<<a[i][j]);
+					sqr[block[i][j]]^=(1<<a[i][j]);
+				}
+			}
+			c=getchar();
+		}
+		sort(b+1,b+10,cmp);
+		U(i,2,n)	nxt[b[i-1]]=b[i];
+		nxt[b[n]]=10;
+		//U(i,1,9)	cout<<b[i]<<" "<<nxt[b[i]]<<endl;
+		DDFS(b[1],1,tot_empty);
+	}
+	return 0;
+}
