@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(register int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=505;
+int n,l,c[N][N],ques[N];
+int f[2][205][205];
+inline void Read(int &x)
+{
+	x=0;char c=getchar();
+	while(!isdigit(c))	c=getchar();
+	while(isdigit(c))	x=(x<<3)+(x<<1)+c-'0',c=getchar();
+}
+int main()
+{
+	freopen("service.in","r",stdin);
+	freopen("service.out","w",stdout);
+	
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+//		scanf("%d%d",&n,&l);
+		Read(n);Read(l);
+		U(i,1,n)	U(j,1,n)
+			Read(c[i][j]);
+			//scanf("%d",&c[i][j]);
+		U(k,1,n)	U(i,1,n)	U(j,1,n)
+			c[i][j]=min(c[i][j],c[i][k]+c[k][j]);
+//		scanf("%d",&ques[1]);
+		Read(ques[1]);
+		U(i,1,n)	U(j,1,n)	f[0][i][j]=INT_MAX-23333;
+		f[0][2][3]=c[1][ques[1]];
+		f[0][1][2]=c[3][ques[1]];
+		f[0][1][3]=c[2][ques[1]];
+		U(_,2,l)
+		{
+//			scanf("%d",&ques[_]);
+			Read(ques[_]);
+			int t=(_-1)&1,d[N]={},x;
+			U(i,1,n)	U(j,1,n)	f[t][i][j]=INT_MAX-23333;
+			U(i,1,n)	d[i]=c[i][ques[_]];
+			U(i,1,n)
+			{
+				U(j,1,n)
+				{
+					x=ques[_-1];
+					f[t][i][j]=min(f[t][i][j],f[t^1][i][j]+d[x]);
+					f[t][x][j]=min(f[t][x][j],f[t^1][i][j]+d[i]);
+					f[t][i][x]=min(f[t][i][x],f[t^1][i][j]+d[j]);
+				}
+			}
+		}
+		int ans=INT_MAX;
+		U(i,1,n)	U(j,1,n)
+			ans=min(ans,f[(l-1)&1][i][j]);
+		printf("%d\n",ans);
+	}
+	
+	return 0;
+}
