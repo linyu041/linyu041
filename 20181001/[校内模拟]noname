@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=50005;
+int a[N],f[N],len,n;
+int main()
+{
+	freopen("noname.in","r",stdin);
+	freopen("noname.out","w",stdout);
+	
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		U(i,1,len)	f[i]=0;
+		len=0;
+		scanf("%d",&n);
+		U(i,1,n)	
+		{
+			scanf("%d",&a[i]);
+			a[i]-=i;
+			if(a[i]<0)	continue;
+			if(a[i]>=f[len])	f[++len]=a[i];
+			else
+			{
+				*upper_bound(f+1,f+1+len,a[i])=a[i];
+			}
+		}
+		printf("%d\n",n-len);
+	}
+	
+	return 0;
+}
