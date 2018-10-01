@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=1005;
+int a[N],n,mina=INT_MAX;
+int main()
+{
+	freopen("thief.in","r",stdin);
+	freopen("thief.out","w",stdout);
+	
+	scanf("%d",&n);
+	U(i,1,n)	
+	{
+		scanf("%d",&a[i]);
+		if(i&1)	mina=min(mina,a[i]);	
+	}
+	if(n&1)
+	{
+		printf("%d\n",mina-1);
+	}
+	else
+	{
+		printf("%d\n",0);
+	}
+	
+	return 0;
+}
