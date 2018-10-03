@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=200005;
+long long n,m,p,fac[N],a[N],b[N];
+long long Qpower(long long x,int tims,long long sum=1)
+{
+	while(tims)
+	{
+		if(tims&1)	sum=sum*x%p; 
+		tims>>=1;
+		x=(x*x)%p;
+	}
+	return sum;
+}
+long long C(long long x,long long y)
+{
+	if(y<x)	return 0;
+	return (fac[y]*Qpower(fac[y-x],p-2)%p)*Qpower(fac[x],p-2)%p;
+}
+long long Lucas(long long x,long long y)
+{
+	if(y<x)	return 0;
+	if(!x)	return 1;
+	return C(x%p,y%p)*Lucas(x/p,y/p)%p;
+}
+int main()
+{
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%lld%lld%lld",&n,&m,&p);
+		fac[1]=fac[0]=1LL;
+		U(i,2,n+m)	fac[i]=(fac[i-1]*i)%p;
+		printf("%lld\n",Lucas(n,n+m));
+	}
+	return 0;
+}
