@@ -1,0 +1,23 @@
+//递推
+#include<bits/stdc++.h>
+using namespace std;
+#define D(i,j,k) for(int i=j;i<=k;++i)
+#define U(i,j,k) for(int i=j;i<=k;++i)
+long long n,p,a[3000005];
+int main()
+{
+	cin>>n>>p;
+	a[1]=1;
+	printf("1\n");
+	U(i,2,n)
+	{
+		a[i]=(long long)-(p/i)*a[p%i];
+		a[i]=(a[i]%p+p)%p;
+		printf("%lld\n",a[i]);
+	}
+	return 0;
+}
+
+*证明* 
+https://www.luogu.org/problemnew/solution/P3811
+
