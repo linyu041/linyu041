@@ -56,4 +56,4 @@ LuoguP3805【模板】manacher算法 manacher模板题
 10.15
 USACO[Section 3.3]Riding the Fences 欧拉回路模板题
 POJ2449 Remmarguts' Date A*求k短路模板题，估价函数为从起点到该点的距离+终点到该点的最短路。
-POJ1077 Eight 八数码问题。A*
+POJ1077 Eight 八数码问题。A*,康托展开哈希判重
