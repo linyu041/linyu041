@@ -1,0 +1,60 @@
+#include<iostream>
+#include<cstdio>
+#include<map>
+#include<string>
+#include<queue>
+#include<cstring>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+int n,limt,a[15],tag,b[100005];
+void DDFS(int x)
+{
+	if(tag||x>limt)	return;
+	if(x==limt&&!tag)
+	{
+		for(int i=x-1;i>=1;--i)
+		{
+			if(tag)	break;
+			for(int j=x-1;j>=1;--j)
+				if(a[i]+a[j]==n)
+				{
+					for(int k=1;k<limt;++k)
+						printf("%d ",a[k]);
+					printf("%d\n",n);
+					tag=1;
+					break;
+				}
+		}
+		return;
+	}
+	for(int i=x-1;i>=1;--i)
+		for(int j=x-1;j>=i;--j)
+		{
+			a[x]=a[i]+a[j];
+			if(b[a[x]]||a[x]<=a[x-1])	continue;
+			b[a[x]]=1;
+			DDFS(x+1);
+			b[a[x]]=0;
+		}
+}
+int main()
+{
+	while(scanf("%d",&n)&&n!=0)
+	{
+		tag=0;
+		if(n==1)
+		{
+			printf("1\n");
+			continue;
+		}
+		for(int i=2;i<=10;++i)
+		{
+			limt=i;
+			a[1]=1;
+			DDFS(2);
+			if(tag)	break;
+		}
+	}
+	return 0;
+}
