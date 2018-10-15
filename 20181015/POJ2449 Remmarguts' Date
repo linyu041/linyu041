@@ -1,0 +1,90 @@
+#include<iostream>
+#include<cstdio>
+#include<map>
+#include<queue>
+#include<cstring>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=1005,M=100005;
+int n,m,s,tt,k;
+struct Edge
+{
+	int la[N],v[M],nxt[M],w[M],tot;
+	void clear()
+	{
+		tot=0;memset(la,0,sizeof(la));
+	};
+	void AddE(int x,int y,int z)
+	{
+		v[++tot]=y;w[tot]=z;nxt[tot]=la[x];la[x]=tot;
+	};
+}e,g;
+int dis[N];
+priority_queue<pair<int,int> > q;
+void DJ(int x)
+{
+	dis[x]=0;
+	q.push(make_pair(0,x));
+	pair<int,int> t;
+	while(!q.empty())
+	{
+		t=q.top();
+		q.pop();
+		for(int j=g.la[t.second];j;j=g.nxt[j])
+		{
+			if(dis[g.v[j]]>dis[t.second]+g.w[j])
+			{
+				dis[g.v[j]]=dis[t.second]+g.w[j];
+				q.push(make_pair(-dis[g.v[j]],g.v[j]));
+			}
+		}
+	}
+}
+int cnt[N];
+void Astar(int x)
+{
+	q.push(make_pair(-dis[x],x));
+	pair<int,int> t;
+	while(!q.empty())
+	{
+		t=q.top();
+		q.pop();
+		++cnt[t.second];
+		if(t.second==tt&&cnt[t.second]==k)
+		{
+			printf("%d\n",-t.first);
+			exit(0);
+		}
+		for(int j=e.la[t.second];j;j=e.nxt[j])
+		{
+			if(cnt[e.v[j]]<k)
+			{
+				q.push(make_pair(t.first-e.w[j]-dis[e.v[j]]+dis[t.second],e.v[j]));
+			}
+		}
+	}
+}
+int main()
+{
+	scanf("%d%d",&n,&m);
+	e.clear();g.clear();
+	int x,y,z;
+	U(i,1,m)
+	{
+		scanf("%d%d%d",&x,&y,&z);
+		e.AddE(x,y,z);g.AddE(y,x,z); 
+	}
+	scanf("%d%d%d",&s,&tt,&k);
+	U(i,0,n)	dis[i]=INT_MAX;
+	DJ(tt);
+	if(dis[s]==dis[0])
+	{
+		printf("-1\n");
+		return 0;
+	}
+	if(s==tt)	++k;
+	Astar(s);//*/
+	printf("-1\n");
+	return 0;
+}
