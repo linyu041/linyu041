@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=3005,x[5]={0,0,1,-1},y[5]={1,-1,0,0};
+int n,m,a[N][N],b[N][N];
+string s;
+queue <pair<int,int> >q;
+void BBFS()
+{
+	pair<int,int> t;
+	while(!q.empty())
+	{
+		t=q.front();
+		q.pop();
+		for(int i=0;i<=3;++i)
+		{
+			int xx=t.first+x[i],yy=t.second+y[i];
+			if(xx>=1&&yy>=1&&xx<=n&&yy<=m&&b[xx][yy]==-1)
+			{
+				b[xx][yy]=b[t.first][t.second]+1;
+				a[xx][yy]=1;
+				q.push(make_pair(xx,yy));
+			}
+		}
+	}
+}
+int main()
+{
+	scanf("%d %d\n",&n,&m);
+	U(i,1,n)
+	{
+		getline(cin,s);
+		U(j,1,m)
+		{
+			if(s[j-1]=='1')
+			{
+				q.push(make_pair(i,j));
+				a[i][j]=1;
+				b[i][j]=0;
+			}
+			else	b[i][j]=-1,a[i][j]=0;
+		}
+	}
+	BBFS();
+	U(i,1,n)
+	{
+		U(j,1,m)
+		{
+			printf("%d ",b[i][j]);
+		}
+		puts("");
+	}
+	return 0;
+}
