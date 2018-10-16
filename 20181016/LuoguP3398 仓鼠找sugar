@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=100005;
+int n,q,la[N],nxt[N<<1],v[N<<1],tot=1;
+int dep[N],go[19][N<<1];
+inline void AddE(int x,int y)
+{
+	v[++tot]=y;nxt[tot]=la[x];la[x]=tot;
+}
+void DDFS(int x,int y)
+{
+	dep[x]=dep[y]+1;go[0][x]=y;
+	U(i,1,17)	go[i][x]=go[i-1][go[i-1][x]];
+	for(int i=la[x];i;i=nxt[i])
+	{
+		if(v[i]!=y)
+			DDFS(v[i],x);
+	}
+}
+int LCA(int a,int b)
+{
+	if(dep[b]<dep[a])	swap(a,b);
+	D(i,17,0)
+	{
+		if(dep[go[i][b]]>=dep[a])
+		{
+			b=go[i][b];
+		}
+	}
+	if(a==b)	return a;
+	D(i,17,0)
+	{
+		if(go[i][a]!=go[i][b])
+		{
+			a=go[i][a];
+			b=go[i][b];
+		}
+	}
+	return go[0][a];
+}
+int Dist(int x,int y)
+{
+	return dep[x]+dep[y]-dep[LCA(x,y)];
+}
+int main()
+{
+	scanf("%d%d",&n,&q);
+	int x,y,a,b;
+	U(i,1,n-1)
+	{
+		scanf("%d%d",&x,&y);
+		AddE(x,y);
+		AddE(y,x);
+	}
+	DDFS(1,0);
+	U(i,1,q)
+	{
+		scanf("%d%d%d%d",&x,&y,&a,&b);
+		if(Dist(x,a)+Dist(y,b)<=Dist(x,y)+Dist(a,b))
+		{
+			printf("Y\n");
+		}
+		else	printf("N\n");
+	}
+	return 0;
+}
