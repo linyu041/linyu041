@@ -58,3 +58,7 @@ USACO[Section 3.3]Riding the Fences 欧拉回路模板题
 POJ2449 Remmarguts' Date A*求k短路模板题，估价函数为从起点到该点的距离+终点到该点的最短路。
 POJ1077 Eight 八数码问题。A*,康托展开哈希判重
 POJ2248 Addition Chains 迭代加深模板
+--------------------------------------------
+10.16
+LuoguP3398 仓鼠找sugar 判断树上两条路径有无交点 LCA
+CH2501 2501 矩阵距离 BFS
