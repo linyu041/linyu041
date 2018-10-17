@@ -1,4 +1,6 @@
 #include<queue>
+#include<string>
+#include<cstring>
 #include<utility>
 #include<map>
 #include<iostream>
@@ -7,12 +9,13 @@
 using namespace std;
 #define U(i,j,k) for(int i=j;i<=k;++i)
 #define D(i,j,k) for(int i=j;i>=k;--i)
-const int N=25,bx[5]={0,0,-1,1},by[5]={1,-1,0,0};
-const char ps[5]={'u','d','w','e'},s[5]={'U','D','W','E'};
-const int px[5]={0,0,1,-1},py[5]={-1,1,0,0};
+const int N=25;
+const int bx[5]={1,-1,0,0},by[5]={0,0,1,-1};
+const int px[5]={-1,1,0,0},py[5]={0,0,-1,1};
+const char ps[5]={'s','n','e','w'},s[5]={'S','N','E','W'};
 typedef pair<int,int> pii;
 char sss[N];
-int n,m,mp[N][N];
+int n,m,mp[N][N],b[N][N],now=0;
 string ss;
 pii ed_box,ed_person;
 struct Data
@@ -20,33 +23,38 @@ struct Data
 	pii p,b;
 	string ans;
 }st;
-queue<Data> q_box;
-int Check(int x,int y)
+inline int Check(int x,int y)
 {
-	return x>=1&&y>=1&&x<=n&&y<=m&&mp[x][y];
+	if(x<1||y<1||!mp[x][y]||x>n||y>m)	return 0;
+	return 1;
 }
 struct Data1
 {
 	pii p;
 	string ans;
 };
-queue<Data1> q_person;
-int Expand(pii x,pii y)
+inline int Expand(pii x,pii y,pii box)
 {
+	queue<Data1> q_person;
+	ss="";
+//	printf("%d %d %d %d\n",x.first,x.second,y.first,y.second);
+	if(x==y)	return 1;
 	Data1 t,r;
 	pii nxt;
 	t.p=x;t.ans="";
 	while(!q_person.empty())	q_person.pop();
 	q_person.push(t);
+	++now;b[t.p.first][t.p.second]=now;
 	while(!q_person.empty())
 	{
 		t=q_person.front();
 		q_person.pop();
-		for(int i=0;i<=3;++i)
+		for(register int i=0;i<=3;++i)
 		{
 			nxt=make_pair(t.p.first+bx[i],t.p.second+by[i]);
-			if(Check(nxt.first,nxt.second))
+			if(Check(nxt.first,nxt.second)&&nxt!=box&&b[nxt.first][nxt.second]!=now)
 			{
+				b[nxt.first][nxt.second]=now;
 				r=t;
 				r.ans+=ps[i];
 				r.p=nxt;
@@ -61,30 +69,35 @@ int Expand(pii x,pii y)
 	}
 	return 0;
 }
-void BBFS_BOX(Data x)
+int tag=0,nwo,markbox[N][N];
+inline void BBFS_BOX(Data x)
 {
-	while(!q_box.empty())	q_box.pop();
+	tag=0;
+	queue<Data> q_box;
+	++nwo;
 	q_box.push(x);
 	Data t,r;
+	markbox[x.b.first][x.b.second]=nwo;
 	int nxtx[2],nxty[2];
-	while(!q_box.empty()) 
+	while(!q_box.empty())
 	{
 		t=q_box.front();
 		q_box.pop();
-		for(int i=0;i<=3;++i)
+		for(register int i=0;i<=3;++i)
 		{
 			nxtx[0]=t.b.first+bx[i];nxty[0]=t.b.second+by[i];
 			nxtx[1]=t.b.first+px[i];nxty[1]=t.b.second+py[i];
-			if(Check(nxtx[0],nxty[0])&&Check(nxtx[1],nxty[1])&&Expand(r.p,make_pair(nxtx[1],nxty[1])))
+			if(Check(nxtx[0],nxty[0])&&Check(nxtx[1],nxty[1])&&markbox[nxtx[0]][nxty[0]]!=nwo&&Expand(t.p,make_pair(nxtx[1],nxty[1]),t.b))
 			{
+				markbox[nxtx[0]][nxty[0]]=nwo;
 				r=t;
 				r.b=make_pair(nxtx[0],nxty[0]);
-				r.p=make_pair(nxtx[1],nxty[1]);
-				r.ans+=ss;
-				r.ans+=s[i];
-				if(r.p==ed_box)
+				r.p=t.b;
+				r.ans+=ss+s[i];
+				if(r.b==ed_box)
 				{
-					cout<<r.ans<<endl;
+					tag=1;
+					printf("%s\n",r.ans.c_str());
 					return;
 				}
 				q_box.push(r);
@@ -94,12 +107,16 @@ void BBFS_BOX(Data x)
 }
 int main()
 {
+	int cnt=0;
 	while(scanf("%d%d",&n,&m)&&n!=0)
 	{
+		++cnt;
+		printf("Maze #%d\n",cnt);
 		U(i,1,n)
 		{
 			scanf("%s",sss+1);
 			U(j,1,m)	
+			{
 				switch(sss[j])
 				{
 					case 'T':mp[i][j]=1;ed_box=make_pair(i,j);break;
@@ -108,9 +125,12 @@ int main()
 					case '.':mp[i][j]=1;break;
 					case '#':mp[i][j]=0;break;
 				}
+			}
 		}
 		st.ans="";
 		BBFS_BOX(st);
+		if(!tag)	printf("Impossible.\n");
+		putchar('\n');
 	}
 	return 0;
 }
