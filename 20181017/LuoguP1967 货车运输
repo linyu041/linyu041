@@ -1,0 +1,114 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=10005,M=51005;
+int n,m,c[N],go[22][N],minn[22][N],fa[N],dep[N];
+struct Edge
+{
+    int la[N],nxt[M<<1],w[M<<1],v[M<<1],tot,u[M<<1];
+    void clear()
+    {
+        tot=0;memset(la,0,sizeof(la));
+    };
+    void AddE(int x,int y,int z)
+    {
+        u[++tot]=x;v[tot]=y;w[tot]=z;nxt[tot]=la[x];la[x]=tot;
+    };
+}g;
+struct Data1
+{
+    int u,v,w;
+}e[M];
+int Find(int x)
+{
+    return fa[x]!=x?fa[x]=Find(fa[x]):x;
+}
+int cmp(Data1 x,Data1 y)
+{
+    return x.w>y.w;
+}
+void Kruskal()
+{
+    sort(e+1,e+1+m,cmp);
+    for(int i=1,k=0;i<=m&&k<n;++i)
+    {
+        if(Find(e[i].u)!=Find(e[i].v))
+        {
+            ++k;
+            fa[Find(e[i].v)]=Find(e[i].u);
+            g.AddE(e[i].v,e[i].u,e[i].w);
+            g.AddE(e[i].u,e[i].v,e[i].w);  
+        }
+    }
+}
+int vis[N<<1];
+void DDFS(int x,int y,int mk)
+{
+    vis[x]=1;
+    go[0][x]=y;minn[0][x]=mk;dep[x]=dep[y]+1;
+    for(int i=1;i<=20;++i)
+    {
+        go[i][x]=go[i-1][go[i-1][x]];
+        minn[i][x]=min(minn[i-1][x],minn[i-1][go[i-1][x]]);
+    }
+    for(int j=g.la[x];j;j=g.nxt[j])
+    {
+        if(g.v[j]==y)	continue;
+        DDFS(g.v[j],x,g.w[j]);
+    }
+}
+int LCA(int a,int b)
+{
+    if(Find(a)!=Find(b))	return -1;
+    if(dep[a]>dep[b])	swap(a,b);
+    int ans=INT_MAX;
+    D(i,20,0)
+    {
+        if(dep[go[i][b]]>=dep[a])	
+        {
+            ans=min(ans,minn[i][b]);
+            b=go[i][b];
+        }
+    }
+    if(a==b)	return ans;
+    D(i,20,0)
+    {
+        if(go[i][a]!=go[i][b])
+        {
+            ans=min(ans,min(minn[i][a],minn[i][b]));
+            a=go[i][a];b=go[i][b];
+        }
+    }
+    return min(ans,min(minn[0][a],minn[0][b]));
+}
+int main()
+{
+    g.clear();
+    scanf("%d%d",&n,&m);
+    U(i,0,20)
+    {
+        U(j,0,n)	minn[i][j]=INT_MAX;
+    }
+    for(register int i=1;i<=n;++i)	fa[i]=i;
+    int x,y,z;
+    U(i,1,m)
+    {
+        scanf("%d%d%d",&e[i].u,&e[i].v,&e[i].w);
+    }
+    Kruskal();
+    U(i,1,n)
+    {
+        if(!vis[i])
+        {
+            DDFS(i,0,INT_MAX);
+        }
+    }
+    scanf("%d",&x);
+    U(i,1,x)
+    {
+        scanf("%d%d",&y,&z);
+        printf("%d\n",LCA(y,z));
+    }
+    return 0;
+}
