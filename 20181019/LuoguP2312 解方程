@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const long long Mod1=998244353,Mod2=1e9+7;
+long long a[105],c[105];
+int n,ans[1000005],cnt;
+void Read(int x)
+{
+	char cc;
+	int tag=0;
+	for(;!isdigit(cc)&&cc!='-';cc=getchar());
+	if(cc=='-')	tag=1;
+	for(;cc=='-';cc=getchar());
+	for(;isdigit(cc);a[x]=(a[x]*10+cc-'0')%Mod1,c[x]=(c[x]*10+cc-'0')%Mod2,cc=getchar());
+	if(tag)	
+	{
+		a[x]=-a[x];
+		c[x]=-c[x];
+	}
+}
+int Check1(long long x)
+{
+	long long sum=a[0],sum2=c[0];
+	long long k=x,s=x;
+	for(int i=1;i<=n;++i)
+	{
+		sum=(sum+a[i]*x)%Mod1;
+		sum2=(sum2+c[i]*s)%Mod2;
+		x=(x*k)%Mod1;
+		s=(s*k)%Mod2;
+	}
+	return sum==0&&sum2==0;
+}
+int m;
+int main()
+{
+	scanf("%d%d",&n,&m);
+	U(i,0,n)
+	{
+		Read(i);
+	}
+	U(i,1,m)
+	{
+		if(Check1(i))	ans[++cnt]=i;
+	}
+	printf("%d\n",cnt);
+	U(i,1,cnt)	printf("%d\n",ans[i]);
+	return 0;
+}
