@@ -66,3 +66,9 @@ CH2501 2501 矩阵距离 BFS
 10.17
 POJ1475 Pushing Boxes 双重BFS
 LuoguP1967 火车运输 最大生成树+LCA
+--------------------------------------------
+10.19
+LuoguP2243 电路维修 双端队列BFS
+LuoguP2312 解方程 哈希+枚举
+LuoguP2679 子串 DP
+POJ3635 Full Tank? DP(用bfs的形式求值)
