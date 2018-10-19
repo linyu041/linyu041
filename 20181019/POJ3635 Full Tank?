@@ -1,0 +1,86 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<algorithm>
+#include<queue>
+using namespace std;
+#define U(i,j,k) for(register int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+typedef pair<int,int> pii;
+const int N=1005,M=20005;
+int n,m,la[N],v[M],w[M],nxt[M],tot,c,st,ed;
+int p[N];
+inline void AddE(int x,int y,int z)
+{
+	v[++tot]=y;w[tot]=z;nxt[tot]=la[x];la[x]=tot;
+}
+int f[N][105];
+struct Data
+{
+	int nwo,cost,fuel;
+};
+struct cmp
+{
+	bool operator () (Data &x,Data &y)	const
+	{
+		return x.cost>y.cost;
+	};
+};
+int used[N][105],nwo;
+void BBFS()
+{
+	++nwo;
+	memset(f,127,sizeof(f));
+	priority_queue<Data,vector<Data>,cmp> q;
+	Data t,r;
+	t.nwo=st;t.cost=0;t.fuel=0;
+	q.push(t);
+	f[st][0]=0;
+	while(!q.empty())
+	{
+		t=q.top();
+		q.pop();
+		if(t.nwo==ed)
+		{
+			printf("%d\n",t.cost);
+			return;
+		}
+		if(used[t.nwo][t.fuel]==nwo)	continue;
+		used[t.nwo][t.fuel]=nwo;
+		if(t.fuel+1<=c&&f[t.nwo][t.fuel+1]>f[t.nwo][t.fuel]+p[t.nwo]&&f[t.nwo][t.fuel+1]!=nwo)
+		{
+			f[t.nwo][t.fuel+1]=f[t.nwo][t.fuel]+p[t.nwo];
+			r=t;r.cost+=p[t.nwo];++r.fuel;
+			q.push(r);
+		}
+		for(int i=la[t.nwo];i;i=nxt[i])
+		{
+			if(t.fuel>=w[i]&&f[v[i]][t.fuel-w[i]]>t.cost&&used[v[i]][t.fuel-w[i]]!=nwo)
+			{
+				f[v[i]][t.fuel-w[i]]=t.cost;
+				r=t;r.nwo=v[i];r.fuel-=w[i];
+				q.push(r);
+			}
+		}
+	}
+	printf("impossible\n");
+}
+int main()
+{
+	scanf("%d%d",&n,&m);
+	U(i,0,n-1)	scanf("%d",p+i);
+	int x,y,z;
+	U(i,1,m)
+	{
+		scanf("%d%d%d",&x,&y,&z);
+		AddE(x,y,z);AddE(y,x,z);
+	}
+	int q;
+	scanf("%d",&q);
+	U(i,1,q)
+	{
+		scanf("%d%d%d",&c,&st,&ed);
+		BBFS();
+	}
+	return 0;
+}
