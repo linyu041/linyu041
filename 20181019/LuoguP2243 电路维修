@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(register int i=j;i<=k;++i)
+const int N=503*503;
+int n,m,tot,la[N<<1],nxt[N+(N<<2)],v[N+(N<<2)],dist[N<<1],w[N+(N<<2)];
+char s[505];
+inline void AddE(int x,int y,int z)
+{
+//	cout<<z<<endl;
+    v[++tot]=y;w[tot]=z;nxt[tot]=la[x];la[x]=tot;
+    v[++tot]=x;w[tot]=z;nxt[tot]=la[y];la[y]=tot;
+}
+#define GetNum(x,y)	(x*(m+1)+y+1)
+typedef pair<int,int> pii;
+int vis[N<<1],nwo;
+deque<int> q;
+inline void BBFS()
+{
+	memset(dist,127,sizeof(dist));
+    ++nwo;
+    q.push_front(GetNum(0,0));
+    dist[GetNum(0,0)]=0;
+    int t;
+	while(!q.empty())
+	{
+  		t=q.front();
+  		q.pop_front();
+  		if(vis[t]==nwo)	continue;
+  		vis[t]=nwo;
+  		for(int j=la[t];j;j=nxt[j])
+  		{
+  			if(dist[v[j]]>dist[t]+w[j])
+  			{
+  				dist[v[j]]=dist[t]+w[j];
+  				if(w[j]==1)	q.push_back(v[j]);
+  				else		q.push_front(v[j]);
+			}
+		}
+	}
+    if(vis[GetNum(n,m)]==nwo)	printf("%d\n",dist[GetNum(n,m)]);
+    else						printf("NO SOLUTION\n");
+}
+int main()
+{
+    int T;
+    scanf("%d",&T);
+    for(register short _=1;_<=T;++_)
+    {
+        scanf("%d%d\n",&n,&m);
+        memset(la,0,sizeof(la));
+        tot=0;
+        char c;
+        for(register int i=0;i<n;++i)
+        {
+            for(register int j=0;j<m;++j)
+            {
+            	for(c=getchar();c!='/'&&c!='\\';c=getchar());
+                if(c=='/')
+                {
+                    AddE(GetNum(i,j+1),GetNum(i+1,j),0);
+                    AddE(GetNum(i,j),GetNum(i+1,j+1),1);
+                }
+                else
+                {
+                    AddE(GetNum(i,j+1),GetNum(i+1,j),1);
+                    AddE(GetNum(i,j),GetNum(i+1,j+1),0);
+                }
+            }
+        }
+        BBFS();
+    }
+    return 0;
+}
