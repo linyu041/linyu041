@@ -72,3 +72,4 @@ LuoguP2243 电路维修 双端队列BFS
 LuoguP2312 解方程 哈希+枚举
 LuoguP2679 子串 DP
 POJ3635 Full Tank? DP(用bfs的形式求值)
+ 	LuoguP3218 [USACO15DEC]最大流Max Flow 关于点的树上差分
