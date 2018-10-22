@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=30005;
+int T,fa[N],d[N],num[N];
+char c;
+int Find(int x)
+{
+	if(fa[x]==x)	return fa[x];
+	int y=Find(fa[x]);
+	d[x]+=d[fa[x]];//!
+	return fa[x]=y;
+}
+void Merge(int x,int y)
+{
+	int fx=Find(x),fy=Find(y);
+	if(fx==fy)	return;
+	d[fy]+=num[fx];
+	num[fx]+=num[fy];
+	fa[fy]=fx;
+	num[fy]=0;
+}
+int Dist(int x,int y)
+{
+	if(Find(x)!=Find(y))	return -1;
+	return abs(d[x]-d[y])-1;
+}
+int main()
+{
+	int x,y;
+	scanf("%d\n",&T);
+	U(i,1,N)	fa[i]=i,d[i]=0,num[i]=1;
+	U(i,1,T)
+	{
+		scanf("%c %d %d\n",&c,&x,&y);
+		if(c=='M')
+		{
+			Merge(x,y);
+		}
+		else
+		{
+			printf("%d\n",Dist(y,x));
+		}
+	}
+	return 0;
+}
