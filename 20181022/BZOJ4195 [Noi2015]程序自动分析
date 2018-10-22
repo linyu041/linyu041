@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+const int N=1000005;
+struct Data 
+{
+	int x,y,opt;
+}a[N];
+int n,b[N+N],tot,fa[N+N],tag;
+int cmp(Data x,Data y)
+{
+	return x.opt>y.opt;
+}
+int Find(int x)
+{
+	return fa[x]!=x?fa[x]=Find(fa[x]):x;
+}
+inline void Merge(int x,int y) 
+{
+	fa[Find(y)]=Find(x);
+}
+int main()
+{
+	int T;
+	scanf("%d",&T);
+	while(T--)
+	{
+		scanf("%d",&n);
+		for(int i=1;i<=n;++i)
+		{
+			scanf("%d%d%d",&a[i].x,&a[i].y,&a[i].opt);
+			b[++tot]=a[i].x;
+			b[++tot]=a[i].y;
+		}
+		sort(a+1,a+1+n,cmp);
+		sort(b+1,b+1+tot);
+		int m=unique(b+1,b+1+tot)-b-1;
+		U(i,1,m) 	fa[i]=i;
+		for(int i=1;i<=n;++i)
+		{
+			if(a[i].opt==0) break;
+			a[i].x=lower_bound(b+1,b+1+m,a[i].x)-b;
+			a[i].y=lower_bound(b+1,b+1+m,a[i].y)-b;
+			Merge(a[i].x,a[i].y);
+		}
+		for(int i=n;i>=1;--i)
+		{
+			if(a[i].opt==1) break;
+			a[i].y=lower_bound(b+1,b+1+m,a[i].y)-b;
+			a[i].x=lower_bound(b+1,b+1+m,a[i].x)-b;
+			if(Find(a[i].x)==Find(a[i].y))
+			{
+				tag=1;
+				break;
+			}
+		}
+		if(tag) printf("NO\n");
+		else printf("YES\n");
+		tag=0;
+	}
+	return 0;
+}
