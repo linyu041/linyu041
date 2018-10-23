@@ -1,4 +1,4 @@
-*[CODE]*
+**[CODE]**
 
 	#include<iostream>
 	#include<algorithm>
@@ -62,5 +62,5 @@
 		return 0;
 	}
 	
- *[解题报告]*
+ **[解题报告]**
  根据题意，可以得出sum[l-1],sum[r]的奇偶性关系，把他们拆成两个点 ，分别代表奇数和偶数，并查集维护。
