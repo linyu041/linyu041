@@ -1,0 +1,108 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define U(i,j,k) for(int i=j;i<=k;++i)
+#define D(i,j,k) for(int i=j;i>=k;--i)
+#define se second
+#define fi first
+const int N=1e4+5,M=2e5+5;
+int n,m,w[N];
+int v[M],nxt[M],la[N],tot,idx,fa[N],cnt;
+inline void AddE(int x,int y)
+{
+	v[++tot]=y;nxt[tot]=la[x];la[x]=tot;
+}
+bitset<N> vis,insta;
+int sta[N],top,low[N],dfn[N],sum[N];
+pair<int,int> p[M];
+void Tarjan(int x)
+{
+	insta[x]=1;
+	sta[++top]=x;
+	vis[x]=1;
+	low[x]=dfn[x]=++idx;
+	for(int i=la[x];i;i=nxt[i])
+	{
+		if(!dfn[v[i]])
+		{
+			Tarjan(v[i]);
+			low[x]=min(low[x],low[v[i]]);
+		}
+		else	if(insta[v[i]])
+		{
+			low[x]=min(low[x],low[v[i]]);
+		}
+	}
+	if(low[x]==dfn[x])
+	{
+		++cnt;
+		while(sta[top]!=x)
+		{
+			fa[sta[top]]=cnt;
+			sum[cnt]+=w[sta[top]];
+			insta[sta[top]]=0;
+			--top;
+		}
+		fa[x]=cnt;
+		sum[cnt]+=w[x];
+		insta[x]=0;
+		--top;
+	}
+}
+int g[N],f[N],ans;
+queue<int> q;
+void TopSort()
+{
+	for(int i=1;i<=cnt;++i)	
+	{
+		if(!g[i])	q.push(i);
+	}	
+	while(!q.empty())
+	{
+		int t=q.front();
+		q.pop();
+		f[t]+=sum[t];
+		ans=max(f[t],ans);
+		for(int i=la[t];i;i=nxt[i])
+		{
+			f[v[i]]=max(f[v[i]],f[t]);
+			--g[v[i]];
+			if(!g[v[i]])
+			{
+				q.push(v[i]);
+			}
+		}
+	}
+}
+int main()
+{
+	scanf("%d%d",&n,&m);
+	U(i,1,n)	scanf("%d",&w[i]);
+	int x,y;
+	U(i,1,m)
+	{
+		scanf("%d%d",&x,&y);
+		p[i]=make_pair(x,y);
+		AddE(x,y);
+	}
+	U(i,1,n)
+	{
+		if(!vis[i])
+		{
+			idx=0;
+			vis[i]=1;
+			Tarjan(i);
+		}
+	}
+	memset(la,0,sizeof(la));tot=0;
+	U(i,1,m)
+	{
+		if(fa[p[i].fi]!=fa[p[i].se])
+		{
+			AddE(fa[p[i].fi],fa[p[i].se]);
+			++g[fa[p[i].se]];
+		}
+	}
+	TopSort();
+	printf("%d\n",ans);
+	return 0;
+}
